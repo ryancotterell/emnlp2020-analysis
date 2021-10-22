@@ -39,7 +39,7 @@ def test(m, f, statistic, comp, permutations=10000):
 		sum2 += statistic(p2)
 
 	return count / permutations
-	return count / permutations, sum1 / permutations, sum2 / permutations
+	return round(count / permutations, 2), sum1 / permutations, sum2 / permutations
 
 
 # comparison directions
@@ -51,6 +51,6 @@ gtr100 = lambda x: len(list(filter(lambda e: e >= 100, x)))
 gtr200 = lambda x: len(list(filter(lambda e: e >= 200, x)))
 
 # run the unpaired permutation tests
-for (desc, statistic, comp) in [("mean", np.mean, high), ("median", np.median, high), ("var", np.var, low), (">= 100", gtr100, high), (">= 200", gtr200, high)]:
+for (desc, statistic, comp) in [("mean", np.mean, high), ("median", np.median, high), ("std", np.std, low), (">= 100", gtr100, high), (">= 200", gtr200, high)]:
 	print("{0}\tmain: {1}, findings: {2}, p-value {3}".format(*(desc, statistic(m), statistic(f), test(m, f, statistic, comp))))
 
