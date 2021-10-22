@@ -33,13 +33,12 @@ def test(m, f, statistic, comp, permutations=10000):
 	sum1, sum2 = 0.0, 0.0
 	for _ in range(permutations):
 		p1, p2 = permute(m, f)
-		if comp(statistic(p1), statistic(p2)):
+		if comp(statistic(p1), statistic(m)):
 			count += 1
 		sum1 += statistic(p1)
 		sum2 += statistic(p2)
 
-	return count / permutations
-	return round(count / permutations, 2), sum1 / permutations, sum2 / permutations
+	return (count + 1) / (permutations + 1)
 
 
 # comparison directions
@@ -47,10 +46,12 @@ high = lambda x, y: x >= y
 low = lambda x, y: y <= x
 
 # other test statistics
-gtr100 = lambda x: len(list(filter(lambda e: e >= 100, x)))
-gtr200 = lambda x: len(list(filter(lambda e: e >= 200, x)))
+gtr5 = lambda x: len(list(filter(lambda e: e >= 5, x))) / float(len(x))
+gtr10 = lambda x: len(list(filter(lambda e: e >= 10, x))) / float(len(x))
+gtr100 = lambda x: len(list(filter(lambda e: e >= 100, x))) / float(len(x))
+gtr200 = lambda x: len(list(filter(lambda e: e >= 200, x))) / float(len(x))
 
 # run the unpaired permutation tests
-for (desc, statistic, comp) in [("mean", np.mean, high), ("median", np.median, high), ("std", np.std, low), (">= 100", gtr100, high), (">= 200", gtr200, high)]:
+for (desc, statistic, comp) in [("mean", np.mean, high), ("median", np.median, high), ("std", np.std, low), (">= 5", gtr5, high), (">= 10", gtr10, high), (">= 100", gtr100, high), (">= 200", gtr200, high)]:
 	print("{0}\tmain: {1}, findings: {2}, p-value {3}".format(*(desc, statistic(m), statistic(f), test(m, f, statistic, comp))))
 
